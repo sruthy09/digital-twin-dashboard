@@ -1,10 +1,10 @@
-!pip install streamlit
-!pip install folium
-!pip install numpy
-!pip install pandas
-!pip install geopandas
-!pip install imageio
-!pip install json
-!pip install random
-!pip install branca
-!pip install shapely
+streamlit
+folium
+numpy
+pandas
+geopandas
+imageio
+json
+random
+branca
+shapely
