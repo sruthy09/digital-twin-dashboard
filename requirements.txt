@@ -4,6 +4,5 @@ numpy
 pandas
 geopandas
 imageio
-random
 branca
 shapely
