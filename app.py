@@ -1,6 +1,5 @@
 import streamlit as st #creating an app
 import streamlit.components.v1 as components
-from streamlit_folium import folium_static
 import pandas as pd
 import numpy as np
 import folium
