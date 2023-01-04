@@ -1,12 +1,3 @@
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import imageio
-import json
-import random
-import streamlit as st #creating an app
-import streamlit_folium
-from streamlit_folium import folium_static 
 import streamlit as st #creating an app
 import streamlit.components.v1 as components
 from streamlit_folium import folium_static
