@@ -15,6 +15,7 @@ import requests
 from geopandas import GeoDataFrame
 from shapely.geometry import Polygon
 import branca
+from streamlit_folium import folium_static
 
 p_gsp_gnode_directconnect_region_lookup = "gsp_gnode_directconnect_region_lookup.csv"
 #p_gsp_gnode_directconnect_region_lookup="https://data.nationalgrideso.com/backend/dataset/2810092e-d4b2-472f-b955-d8bea01f9ec0/resource/bbe2cc72-a6c6-46e6-8f4e-48b879467368/download/gsp_gnode_directconnect_region_lookup.csv"
