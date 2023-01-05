@@ -38,6 +38,7 @@ p_sub_image = "gb.png"
 p_overwrite_file = "gsp_regions_filewrite.geojson"
 #p_overwrite_file = "https://drive.google.com/file/d/1lFyi0AkPN0gueq9GbEEYRA3E2l-conLv/view?usp=share_link"
 def style_function(x):
+    df_points, heatmap = get_dataset()
     colormap = get_colormap(get_dataset())
     return {
         "fillColor": "#756bb1",#colormap(x["properties"]["2021"]),
@@ -66,7 +67,9 @@ def get_dataset():
     df_heatregion_merged_map = df_heatregion_merged_map.fillna(0) 
     df_heatregion_merged_map = GeoDataFrame(df_heatregion_merged_map, crs="EPSG:4326", geometry=df_heatregion_merged_map['geometry'])
     df_heatregion_merged_map = df_heatregion_merged_map[df_heatregion_merged_map['geometry'] != None]
-    return df_heatregion_merged_map
+    
+    return df_points, df_heatregion_merged_map
+    
 @st.cache(suppress_st_warning=True)
 def get_coordinates():
     path = p_gsp_gnode_directconnect_region_lookup #"/Users/Sruthy.Benny/Downloads/GIS_hit_coordinates.csv"
@@ -135,7 +138,7 @@ def draw_basemap(tile_select):
     fullscreen.add_to(mp)  
     return mp
 def draw_region(base_map, tile_select):
-    heatmap = get_dataset()
+    df_points, heatmap = get_dataset()
     colormap = get_colormap(heatmap)
     stategeo = folium.GeoJson(
         heatmap,
@@ -155,12 +158,12 @@ def draw_region(base_map, tile_select):
     ).add_to(base_map)
     colormap.add_to(base_map)
     return base_map
-def app_feature(mp, add_select):
+def app_feature(mp, add_select, heatmap):
     fg=folium.FeatureGroup(name='Assets')
     mp.add_child(fg)
     draw = Draw(position="bottomleft")
     draw.add_to(mp)
-    heatmap = get_dataset()
+    #heatmap = get_dataset()
     colormap = get_colormap(heatmap)
     df_coordinates = get_coordinates()
     df_areas = get_licensearea()
@@ -262,25 +265,14 @@ def app_layout():
     ("", "Grid Supply Points","Power Consumption - Future Energy Scenario", 
      "Power Consumption Demand - Future Energy Scenario")
     )
-    geojson_point = p_gsp_regions_20181031 #"/Users/Sruthy.Benny/Documents/gsp_regions_20181031.geojson"
-    heat_path = p_fes_2022_building_blocks_version_4 #"/Users/Sruthy.Benny/Documents/FES_Region_Heat.csv"
-    df_points = gpd.read_file(geojson_point)
-    df_points = df_points.to_crs("EPSG:4326")
-    df_heat_region = pd.read_csv(heat_path)
-    df_heat_region.drop(columns=['Share of GSP','Comment'], axis=1, inplace=True)
-    df_heatregion_merged = pd.merge(df_heat_region, df_points, how='inner', left_on='GSP', right_on='RegionName')
-    df_heatregion_merged1 = df_heatregion_merged[(df_heatregion_merged['FES Scenario'] == 'Leading the Way') & (df_heatregion_merged['Building Block ID Number'] == 'Gen_BB001')]
-    df_heatregion_merged1 = df_heatregion_merged.drop_duplicates(subset='GSP', keep="first")
-    df_heatregion_merged_map = df_heatregion_merged1[['GSP','geometry','2021','2022','2023','2024','2025','2026','2027','2028','2029','2030','2031','2032','2033','2034','2035','2036','2037','2038','2039','2040','2041','2042','2043','2044','2045','2046','2047','2048','2049','2050']]
-    df_heatregion_merged_map = df_heatregion_merged_map.fillna(0) 
-    df_heatregion_merged_map = GeoDataFrame(df_heatregion_merged_map, crs="EPSG:4326", geometry=df_heatregion_merged_map['geometry'])
-    df_heatregion_merged_map = df_heatregion_merged_map[df_heatregion_merged_map['geometry'] != None]
+    #fetch the data
+    df_points, df_heatregion_merged_map = get_dataset()
     #design for the app
     st.title('Select the Map to view')
     if select_data == "":
         map = base_map
     elif select_data == "Grid Supply Points":
-        map = app_feature(base_map, tile_select)
+        map = app_feature(base_map, tile_select, df_heatregion_merged_map)
         folium_static(map)
     elif select_data == "Power Consumption - Future Energy Scenario":
         df_heatregion_merged_map_cpy = df_heatregion_merged_map.copy()
