@@ -6,3 +6,4 @@ geopandas
 imageio
 branca
 shapely
+streamlit_folium
