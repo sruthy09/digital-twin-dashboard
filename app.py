@@ -51,6 +51,7 @@ def get_min_max(heatmap):
     minimum, maximum = heatmap["2021"].quantile([0.05, 0.95]).apply(rd2)
     mean = round(heatmap["2021"].mean(), 2)
     return minimum, maximum, mean
+@st.cache(suppress_st_warning=True)
 def get_dataset():
     geojson_point = p_gsp_regions_20181031 #"/Users/Sruthy.Benny/Documents/gsp_regions_20181031.geojson"
     df_points = gpd.read_file(geojson_point)
@@ -66,11 +67,13 @@ def get_dataset():
     df_heatregion_merged_map = GeoDataFrame(df_heatregion_merged_map, crs="EPSG:4326", geometry=df_heatregion_merged_map['geometry'])
     df_heatregion_merged_map = df_heatregion_merged_map[df_heatregion_merged_map['geometry'] != None]
     return df_heatregion_merged_map
+@st.cache(suppress_st_warning=True)
 def get_coordinates():
     path = p_gsp_gnode_directconnect_region_lookup #"/Users/Sruthy.Benny/Downloads/GIS_hit_coordinates.csv"
     df_coordinates = pd.read_csv(path)
     df_coordinates.dropna(subset=["gnode_lat","gnode_lon"],inplace=True)
     return df_coordinates
+@st.cache(suppress_st_warning=True)
 def get_licensearea():
     geojson_path = p_dno_license_areas_20200506 #"/Users/Sruthy.Benny/Documents/dno_license_areas_20200506.geojson"
     df_areas = gpd.read_file(geojson_path)
